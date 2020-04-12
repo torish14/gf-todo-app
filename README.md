@@ -1,4 +1,5 @@
 # gf-todo-app
+Vue.js + Firebase を用いて、Todoアプリを開発する
 
 ## Project setup
 ```
