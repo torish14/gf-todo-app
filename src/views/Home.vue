@@ -9,19 +9,19 @@
         <button @click="addTodo">add</button>
       </label>
     </div>
-    <ul class="todo-task" v-for="todo in todos" :key="todo">
+    <ul class="todo-task" v-for="todo in todos" :key="todo.text">
       <li>
-        <input type="checkbox">
-          {{ todo }}
+        <input type="checkbox" @change="stateTodo(todo)" v-model="todo.done">
+          {{ todo.text }}
         <button></button>
       </li>
-      <li>
+      <!-- <li>
         <label>
           <input type="checkbox">
           study
           <button></button>
         </label>
-      </li>
+      </li> -->
     </ul>
   </div>
 </template>
@@ -31,6 +31,7 @@ import firebase from 'firebase/app'
 import { db } from '../main.js'
 
 export default {
+  name: 'Home',
   // データを扱うため、dataオプションを使用する
   data() {
     return {
@@ -64,7 +65,7 @@ export default {
       this.newTodo = ''
     },
     // Firestore からデータを取得する
-    getTodo: function () {
+    getTodo: function() {
       // onSnapshotメソッドは、データを呼び出した後も変更を監視する
       db.collection('todos').onSnapshot((querySnapshot) => {
         // allTodos配列にで各データを格納する
@@ -75,7 +76,16 @@ export default {
         // allTodos を todosプロパティに渡してデータを取得している
         this.todos = allTodos
       })
+    },
+    // 完了・未完了の更新を行う
+    // updateメソッドを使用し、stateTodoメソッドに渡された TodoデータID と DBID が一致するデータの更新を行う
+    stateTodo: function(todo) {
+      db.collection('todos').doc(todo.id).update(todo)
     }
+  },
+  // createdフックを使用して、Vueインスタンス生成時に getTodo メソッドを実行する
+  created: function() {
+    this.getTodo()
   }
 }
 </script>
