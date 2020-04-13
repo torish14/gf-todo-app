@@ -1,3 +1,5 @@
+// セキュリティルールの設定
+// テストモードで作成されたセキュリティルールは誰でも DB にアクセスできるのでケアする
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -10,8 +12,11 @@ service cloud.firestore {
     //
     // Make sure to write security rules for your app before that time, or else
     // your app will lose access to your Firestore database
-    match /{document=**} {
-      allow read, write: if request.time < timestamp.date(2020, 5, 13);
+    match /users/{userId} {
+      allow read, write: if request.auth.uid
+      match /todos/{todoId} {
+        allow read, write: if request.auth.uid === userId
+      }
     }
   }
 }
