@@ -13,7 +13,7 @@
       <li>
         <input type="checkbox" @change="stateTodo(todo)" v-model="todo.done">
           {{ todo.text }}
-        <button></button>
+        <button @click="deleteTodo(todo)">x</button>
       </li>
       <!-- <li>
         <label>
@@ -40,8 +40,8 @@ export default {
       todos: []
     }
   },
-  // フォームのテキストを Todoリストに追加する処理を実装する
   methods: {
+    //? フォームのテキストを Todoリストに追加する処理を実装する
     // addTodo: function () {
       // addTooメソッドは、pushメソッドを使ってフォームテキストを todosプロパティに追加している
       // dataオプションにアクセスするには、プロパティ目の頭に this. を付与する
@@ -64,7 +64,7 @@ export default {
       })
       this.newTodo = ''
     },
-    // Firestore からデータを取得する
+    //? Firestore からデータを取得する
     getTodo: function() {
       // onSnapshotメソッドは、データを呼び出した後も変更を監視する
       db.collection('todos').onSnapshot((querySnapshot) => {
@@ -77,13 +77,17 @@ export default {
         this.todos = allTodos
       })
     },
-    // 完了・未完了の更新を行う
+    //? 完了・未完了の更新を行う
     // updateメソッドを使用し、stateTodoメソッドに渡された TodoデータID と DBID が一致するデータの更新を行う
     stateTodo: function(todo) {
       db.collection('todos').doc(todo.id).update(todo)
+    },
+    //? データの削除を行う
+    deleteTodo: function(toedo) {
+      db.collection('todos').doc(todo.id).delete()
     }
   },
-  // createdフックを使用して、Vueインスタンス生成時に getTodo メソッドを実行する
+  //? createdフックを使用して、Vueインスタンス生成時に getTodo メソッドを実行する
   created: function() {
     this.getTodo()
   }
